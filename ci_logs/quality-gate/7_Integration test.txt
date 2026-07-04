@@ -1,0 +1,24 @@
+﻿2026-07-04T03:48:26.8443741Z ##[group]Run uvicorn main:app --host 0.0.0.0 --port 8000 &
+2026-07-04T03:48:26.8444003Z [36;1muvicorn main:app --host 0.0.0.0 --port 8000 &[0m
+2026-07-04T03:48:26.8444160Z [36;1msleep 3[0m
+2026-07-04T03:48:26.8444345Z [36;1mcurl -f http://localhost:8000/api/v1/catalog/courses/COSC3506 || true[0m
+2026-07-04T03:48:26.8469908Z shell: /usr/bin/bash -e {0}
+2026-07-04T03:48:26.8470044Z env:
+2026-07-04T03:48:26.8470181Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T03:48:26.8470397Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+2026-07-04T03:48:26.8470614Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T03:48:26.8470807Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T03:48:26.8471001Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T03:48:26.8471196Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+2026-07-04T03:48:26.8471361Z ##[endgroup]
+2026-07-04T03:48:27.0809098Z INFO:     Started server process [2154]
+2026-07-04T03:48:27.0809646Z INFO:     Waiting for application startup.
+2026-07-04T03:48:27.0809949Z INFO:     Application startup complete.
+2026-07-04T03:48:27.0810885Z INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-07-04T03:48:29.8576476Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-07-04T03:48:29.8576899Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-07-04T03:48:29.8577099Z 
+2026-07-04T03:48:29.8624603Z INFO:     127.0.0.1:59358 - "GET /api/v1/catalog/courses/COSC3506 HTTP/1.1" 404 Not Found
+2026-07-04T03:48:29.8626309Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-07-04T03:48:29.8626599Z   0    29    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-07-04T03:48:29.8626996Z curl: (22) The requested URL returned error: 404

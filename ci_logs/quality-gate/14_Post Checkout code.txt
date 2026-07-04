@@ -1,0 +1,15 @@
+﻿2026-07-04T03:48:34.9545412Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-04T03:48:34.9546463Z Post job cleanup.
+2026-07-04T03:48:34.9984722Z (node:2168) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-07-04T03:48:34.9989074Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-07-04T03:48:34.9996620Z [command]/usr/bin/git version
+2026-07-04T03:48:35.0050666Z git version 2.54.0
+2026-07-04T03:48:35.0070232Z Temporarily overriding HOME='/home/runner/work/_temp/bfd264b5-14d5-4b4d-8055-aa073bf7365d' before making global git config changes
+2026-07-04T03:48:35.0070837Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-04T03:48:35.0072729Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/course-registration-api/course-registration-api
+2026-07-04T03:48:35.0096973Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-04T03:48:35.0117509Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-04T03:48:35.0280292Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-04T03:48:35.0295348Z http.https://github.com/.extraheader
+2026-07-04T03:48:35.0300356Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-07-04T03:48:35.0320770Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"

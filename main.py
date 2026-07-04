@@ -12,8 +12,7 @@ students = {}
 def parse_courses(raw: str) -> list[str]:
     if not raw or raw.strip().lower() == "none":
         return []
-    return re.findall(r'[A-Z]{2,4}\s\d{4}', raw)
-
+    return re.findall(r'[A-Z]{2,4}[\s\-]?\d{4}', raw)
 
 class PlannedCourse(BaseModel):
     course_code: str
@@ -216,6 +215,7 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
     history = student["history"]
     plan = student["plan"]
 
+    # Build completed set keyed by normalized code
     completed = {}
     for course in history:
         if course["status"] == "Completed":
@@ -224,6 +224,7 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
                 completed[nc] = []
             completed[nc].append(course)
 
+    # Deduplicate — keep best per course for earned credits
     total_earned = 0
     earned_per_course = {}
     for nc, entries in completed.items():
@@ -231,10 +232,12 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
         earned_per_course[nc] = best
         total_earned += best["credits_earned"]
 
+    # Build catalog lookup by normalized code
     catalog_by_norm = {}
     for code, data in catalog.items():
         catalog_by_norm[normalize_code(code)] = data
 
+    # Group plan by term
     plan_by_term = {}
     for pc in plan:
         t = pc["term"]
@@ -254,18 +257,20 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
             nc = normalize_code(pc["course_code"])
             cat_entry = catalog_by_norm.get(nc)
 
+            # Credits for planned
             if cat_entry:
                 try:
                     total_planned += int(cat_entry["credits"])
                 except (ValueError, TypeError):
                     pass
 
+            # Check prerequisites
             if cat_entry:
                 for prereq in cat_entry.get("prerequisites", []):
-                    np = normalize_code(prereq)
+                    np_norm = normalize_code(prereq)
                     prereq_ok = False
-                    if np in completed:
-                        for entry in completed[np]:
+                    if np_norm in completed:
+                        for entry in completed[np_norm]:
                             if term_before(entry["term"], term):
                                 prereq_ok = True
                                 break
@@ -276,6 +281,7 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
                             "message": f"Missing prerequisite: {prereq}"
                         })
 
+            # Check cross-listings
             if cat_entry:
                 for cross in cat_entry.get("cross_listed", []):
                     ncross = normalize_code(cross)
