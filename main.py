@@ -31,7 +31,6 @@ class HistoryCourse(BaseModel):
 class HistoryBody(BaseModel):
     history: list[HistoryCourse]
 
-
 @app.post("/api/v1/admin/catalog/import")
 async def import_catalog(file: UploadFile = File(...)):
     content = await file.read()
@@ -47,7 +46,8 @@ async def import_catalog(file: UploadFile = File(...)):
         credits = cols[2].get_text(strip=True)
         prereqs = cols[3].get_text(strip=True)
         cross   = cols[4].get_text(strip=True) if len(cols) > 4 else ""
-        catalog[code] = {
+        norm_key = re.sub(r'[\s\-]', '', code).upper()
+        catalog[norm_key] = {
             "course_code":   code,
             "title":         title,
             "credits":       credits,
@@ -57,17 +57,13 @@ async def import_catalog(file: UploadFile = File(...)):
         imported += 1
     return {"message": f"Imported {imported} courses successfully."}
 
-
 @app.get("/api/v1/catalog/courses/{course_code}")
 def get_course(course_code: str):
-    course = catalog.get(course_code)
-    if not course:
-        normalized = re.sub(r'([A-Z]{2,4})(\d{4})', r'\1 \2', course_code)
-        course = catalog.get(normalized)
+    norm_key = re.sub(r'[\s\-]', '', course_code).upper()
+    course = catalog.get(norm_key)
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     return course
-
 
 def parse_transcript(content: bytes) -> list[dict]:
     soup = BeautifulSoup(content, "html.parser")
