@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
 import re
@@ -199,4 +199,147 @@ def get_profile(student_id: str):
         "student_id": student_id,
         "history": s["history"],
         "plan": s["plan"]
+    }
+# ---------- Phase 3 helpers ----------
+
+def normalize_code(code: str) -> str:
+    """COSC-3506 = COSC 3506 = cosc3506 → COSC3506"""
+    return re.sub(r'[\s\-]', '', code).upper()
+
+
+SEASON_ORDER = {"W": 0, "SP": 1, "S": 2, "F": 3}
+
+
+def parse_term(term: str):
+    """Returns a sortable tuple (year, season_int) from e.g. '23F', '26SP'."""
+    match = re.match(r'(\d{2})(W|SP|S|F)$', term)
+    if not match:
+        return (99, 99)
+    year = int(match.group(1))
+    season = SEASON_ORDER.get(match.group(2), 99)
+    return (year, season)
+
+
+def term_before(t1: str, t2: str) -> bool:
+    """Returns True if t1 is strictly before t2."""
+    return parse_term(t1) < parse_term(t2)
+
+
+# ---------- Phase 3 endpoint ----------
+
+@app.get("/api/v1/students/{student_id}/audit-report")
+def audit_report(student_id: str, strict: bool = Query(default=False)):
+    if student_id not in students:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    student = students[student_id]
+    history = student["history"]
+    plan = student["plan"]
+
+    # Build completed set: normalize_code -> list of (term, credits_earned)
+    completed = {}
+    for course in history:
+        if course["status"] == "Completed":
+            nc = normalize_code(course["course_code"])
+            if nc not in completed:
+                completed[nc] = []
+            completed[nc].append(course)
+
+    # Deduplicate completed — keep highest credits per course (retake handling)
+    total_earned = 0
+    earned_per_course = {}
+    for nc, entries in completed.items():
+        best = max(entries, key=lambda x: x["credits_earned"])
+        earned_per_course[nc] = best
+        total_earned += best["credits_earned"]
+
+    # Build catalog lookup by normalized code
+    catalog_by_norm = {}
+    for code, data in catalog.items():
+        catalog_by_norm[normalize_code(code)] = data
+
+    # Group plan by term
+    plan_by_term = {}
+    for pc in plan:
+        t = pc["term"]
+        if t not in plan_by_term:
+            plan_by_term[t] = []
+        plan_by_term[t].append(pc)
+
+    # Sort terms chronologically
+    sorted_terms = sorted(plan_by_term.keys(), key=parse_term)
+
+    timeline_validation = []
+    cross_list_violations = []
+    total_planned = 0
+
+    for term in sorted_terms:
+        term_errors = []
+        for pc in plan_by_term[term]:
+            nc = normalize_code(pc["course_code"])
+            cat_entry = catalog_by_norm.get(nc)
+
+            # Credits for planned
+            if cat_entry:
+                try:
+                    total_planned += int(cat_entry["credits"])
+                except (ValueError, TypeError):
+                    pass
+
+            # Check prerequisites
+            if cat_entry:
+                for prereq in cat_entry.get("prerequisites", []):
+                    np = normalize_code(prereq)
+                    # Must be completed in a strictly earlier term
+                    prereq_ok = False
+                    if np in completed:
+                        for entry in completed[np]:
+                            if term_before(entry["term"], term):
+                                prereq_ok = True
+                                break
+                    if not prereq_ok:
+                        term_errors.append({
+                            "course_code": pc["course_code"],
+                            "type": "MISSING_PREREQUISITE",
+                            "message": f"Missing prerequisite: {prereq}"
+                        })
+
+            # Check cross-listing
+            if cat_entry:
+                for cross in cat_entry.get("cross_listed", []):
+                    ncross = normalize_code(cross)
+                    if ncross in earned_per_course:
+                        cross_list_violations.append({
+                            "course_code": pc["course_code"],
+                            "type": "CROSS_LIST_CONFLICT",
+                            "message": f"Cross-listed with completed course {cross}"
+                        })
+
+        if term_errors:
+            timeline_validation.append({
+                "term": term,
+                "errors": term_errors
+            })
+
+    # Status
+    has_issues = bool(timeline_validation or cross_list_violations)
+    if not has_issues:
+        status = "ok"
+    elif strict:
+        status = "failed"
+    else:
+        status = "warning"
+
+    total_remaining = max(0, 120 - total_earned - total_planned)
+
+    return {
+        "student_id": student_id,
+        "status": status,
+        "timeline_validation": timeline_validation,
+        "cross_list_violations": cross_list_violations,
+        "credit_summary": {
+            "total_earned": total_earned,
+            "total_planned": total_planned,
+            "total_remaining_for_graduation": total_remaining
+        }
     }
