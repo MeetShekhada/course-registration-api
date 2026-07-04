@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install fastapi uvicorn beautifulsoup4 python-multipart httpx pytest pytest-cov flake8
+
+      - name: Lint with flake8
+        run: |
+          flake8 main.py --max-line-length=120 --ignore=E302,W503
+
+      - name: Run tests with coverage
+        run: |
+          pytest test_main.py --cov=main --cov-fail-under=80 -v
+
+      - name: Integration test
+        run: |
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          sleep 3
+          curl -f http://localhost:8000/api/v1/catalog/courses/COSC3506 || true

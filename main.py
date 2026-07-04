@@ -5,22 +5,15 @@ import re
 
 app = FastAPI()
 
-# Phase 1 - global catalog
 catalog = {}
-
-# Phase 2 - per-student data
 students = {}
 
-
-# ---------- Phase 1 models ----------
 
 def parse_courses(raw: str) -> list[str]:
     if not raw or raw.strip().lower() == "none":
         return []
     return re.findall(r'[A-Z]{2,4}\s\d{4}', raw)
 
-
-# ---------- Phase 2 models ----------
 
 class PlannedCourse(BaseModel):
     course_code: str
@@ -38,8 +31,6 @@ class HistoryCourse(BaseModel):
 class HistoryBody(BaseModel):
     history: list[HistoryCourse]
 
-
-# ---------- Phase 1 endpoints ----------
 
 @app.post("/api/v1/admin/catalog/import")
 async def import_catalog(file: UploadFile = File(...)):
@@ -78,11 +69,9 @@ def get_course(course_code: str):
     return course
 
 
-# ---------- Phase 2 endpoints ----------
-
 def parse_transcript(content: bytes) -> list[dict]:
     soup = BeautifulSoup(content, "html.parser")
-    seen = {}  # key: (course_code, term)
+    seen = {}
 
     for table in soup.find_all("table"):
         headers = [th.get_text(strip=True) for th in table.find_all("th")]
@@ -94,10 +83,10 @@ def parse_transcript(content: bytes) -> list[dict]:
             if len(cols) < 6:
                 continue
 
-            status  = cols[0].get_text(strip=True)
-            code    = cols[1].get_text(strip=True)
-            grade   = cols[3].get_text(strip=True)
-            term    = cols[4].get_text(strip=True)
+            status      = cols[0].get_text(strip=True)
+            code        = cols[1].get_text(strip=True)
+            grade       = cols[3].get_text(strip=True)
+            term        = cols[4].get_text(strip=True)
             credits_raw = cols[5].get_text(strip=True)
 
             if status not in ("Completed", "In-Progress", "Attempted"):
@@ -154,7 +143,7 @@ async def import_history(student_id: str, file: UploadFile = File(...)):
 def update_history(student_id: str, body: HistoryBody):
     if student_id not in students:
         raise HTTPException(status_code=404, detail="Student not found")
-    students[student_id]["history"] = [c.dict() for c in body.history]
+    students[student_id]["history"] = [c.model_dump() for c in body.history]
     return {"status": "success", "message": "Academic history updated successfully"}
 
 
@@ -170,7 +159,7 @@ def delete_history(student_id: str):
 def create_plan(student_id: str, body: PlanBody):
     if student_id not in students:
         raise HTTPException(status_code=404, detail="Student not found")
-    students[student_id]["plan"] = [c.dict() for c in body.planned_courses]
+    students[student_id]["plan"] = [c.model_dump() for c in body.planned_courses]
     return {"status": "success", "planned_courses_saved": len(body.planned_courses)}
 
 
@@ -178,7 +167,7 @@ def create_plan(student_id: str, body: PlanBody):
 def update_plan(student_id: str, body: PlanBody):
     if student_id not in students:
         raise HTTPException(status_code=404, detail="Student not found")
-    students[student_id]["plan"] = [c.dict() for c in body.planned_courses]
+    students[student_id]["plan"] = [c.model_dump() for c in body.planned_courses]
     return {"status": "success", "planned_courses_saved": len(body.planned_courses)}
 
 
@@ -200,10 +189,9 @@ def get_profile(student_id: str):
         "history": s["history"],
         "plan": s["plan"]
     }
-# ---------- Phase 3 helpers ----------
+
 
 def normalize_code(code: str) -> str:
-    """COSC-3506 = COSC 3506 = cosc3506 → COSC3506"""
     return re.sub(r'[\s\-]', '', code).upper()
 
 
@@ -211,7 +199,6 @@ SEASON_ORDER = {"W": 0, "SP": 1, "S": 2, "F": 3}
 
 
 def parse_term(term: str):
-    """Returns a sortable tuple (year, season_int) from e.g. '23F', '26SP'."""
     match = re.match(r'(\d{2})(W|SP|S|F)$', term)
     if not match:
         return (99, 99)
@@ -221,11 +208,8 @@ def parse_term(term: str):
 
 
 def term_before(t1: str, t2: str) -> bool:
-    """Returns True if t1 is strictly before t2."""
     return parse_term(t1) < parse_term(t2)
 
-
-# ---------- Phase 3 endpoint ----------
 
 @app.get("/api/v1/students/{student_id}/audit-report")
 def audit_report(student_id: str, strict: bool = Query(default=False)):
@@ -236,7 +220,6 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
     history = student["history"]
     plan = student["plan"]
 
-    # Build completed set: normalize_code -> list of (term, credits_earned)
     completed = {}
     for course in history:
         if course["status"] == "Completed":
@@ -245,7 +228,6 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
                 completed[nc] = []
             completed[nc].append(course)
 
-    # Deduplicate completed — keep highest credits per course (retake handling)
     total_earned = 0
     earned_per_course = {}
     for nc, entries in completed.items():
@@ -253,12 +235,10 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
         earned_per_course[nc] = best
         total_earned += best["credits_earned"]
 
-    # Build catalog lookup by normalized code
     catalog_by_norm = {}
     for code, data in catalog.items():
         catalog_by_norm[normalize_code(code)] = data
 
-    # Group plan by term
     plan_by_term = {}
     for pc in plan:
         t = pc["term"]
@@ -266,7 +246,6 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
             plan_by_term[t] = []
         plan_by_term[t].append(pc)
 
-    # Sort terms chronologically
     sorted_terms = sorted(plan_by_term.keys(), key=parse_term)
 
     timeline_validation = []
@@ -279,18 +258,15 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
             nc = normalize_code(pc["course_code"])
             cat_entry = catalog_by_norm.get(nc)
 
-            # Credits for planned
             if cat_entry:
                 try:
                     total_planned += int(cat_entry["credits"])
                 except (ValueError, TypeError):
                     pass
 
-            # Check prerequisites
             if cat_entry:
                 for prereq in cat_entry.get("prerequisites", []):
                     np = normalize_code(prereq)
-                    # Must be completed in a strictly earlier term
                     prereq_ok = False
                     if np in completed:
                         for entry in completed[np]:
@@ -304,7 +280,6 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
                             "message": f"Missing prerequisite: {prereq}"
                         })
 
-            # Check cross-listing
             if cat_entry:
                 for cross in cat_entry.get("cross_listed", []):
                     ncross = normalize_code(cross)
@@ -321,7 +296,6 @@ def audit_report(student_id: str, strict: bool = Query(default=False)):
                 "errors": term_errors
             })
 
-    # Status
     has_issues = bool(timeline_validation or cross_list_violations)
     if not has_issues:
         status = "ok"
