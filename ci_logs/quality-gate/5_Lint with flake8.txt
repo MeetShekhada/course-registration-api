@@ -1,11 +1,11 @@
-﻿2026-07-04T03:48:25.5994556Z ##[group]Run flake8 main.py --max-line-length=200 --ignore=E302,W503,E221,E241,E501,W291,W293
-2026-07-04T03:48:25.5994928Z [36;1mflake8 main.py --max-line-length=200 --ignore=E302,W503,E221,E241,E501,W291,W293[0m
-2026-07-04T03:48:25.6021749Z shell: /usr/bin/bash -e {0}
-2026-07-04T03:48:25.6021881Z env:
-2026-07-04T03:48:25.6022022Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.6022246Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
-2026-07-04T03:48:25.6022464Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.6022656Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.6022852Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.6023186Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
-2026-07-04T03:48:25.6023352Z ##[endgroup]
+﻿2026-07-04T06:53:17.6745222Z ##[group]Run flake8 main.py --max-line-length=200 --ignore=E302,W503,E221,E241,E501,W291,W293,W292O
+2026-07-04T06:53:17.6746013Z [36;1mflake8 main.py --max-line-length=200 --ignore=E302,W503,E221,E241,E501,W291,W293,W292O[0m
+2026-07-04T06:53:17.6780402Z shell: /usr/bin/bash -e {0}
+2026-07-04T06:53:17.6780687Z env:
+2026-07-04T06:53:17.6780997Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:17.6781806Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+2026-07-04T06:53:17.6782362Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:17.6782824Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:17.6783289Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:17.6783760Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+2026-07-04T06:53:17.6784148Z ##[endgroup]

@@ -1,54 +1,54 @@
-﻿2026-07-04T03:48:25.9026873Z ##[group]Run pytest test_main.py --cov=main --cov-fail-under=80 -v
-2026-07-04T03:48:25.9027151Z [36;1mpytest test_main.py --cov=main --cov-fail-under=80 -v[0m
-2026-07-04T03:48:25.9052514Z shell: /usr/bin/bash -e {0}
-2026-07-04T03:48:25.9052648Z env:
-2026-07-04T03:48:25.9052783Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.9053078Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
-2026-07-04T03:48:25.9053292Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.9053484Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.9053678Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
-2026-07-04T03:48:25.9053874Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
-2026-07-04T03:48:25.9054038Z ##[endgroup]
-2026-07-04T03:48:26.3114741Z ============================= test session starts ==============================
-2026-07-04T03:48:26.3115313Z platform linux -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.11.15/x64/bin/python
-2026-07-04T03:48:26.3115648Z cachedir: .pytest_cache
-2026-07-04T03:48:26.3115844Z rootdir: /home/runner/work/course-registration-api/course-registration-api
-2026-07-04T03:48:26.3116068Z plugins: anyio-4.14.1, cov-7.1.0
-2026-07-04T03:48:26.6719749Z collecting ... collected 19 items
-2026-07-04T03:48:26.6719944Z 
-2026-07-04T03:48:26.6817837Z test_main.py::test_import_catalog PASSED                                 [  5%]
-2026-07-04T03:48:26.6845546Z test_main.py::test_get_course_not_found PASSED                           [ 10%]
-2026-07-04T03:48:26.6893980Z test_main.py::test_get_course_found PASSED                               [ 15%]
-2026-07-04T03:48:26.6931496Z test_main.py::test_import_history PASSED                                 [ 21%]
-2026-07-04T03:48:26.6987103Z test_main.py::test_get_profile PASSED                                    [ 26%]
-2026-07-04T03:48:26.7038030Z test_main.py::test_post_plan PASSED                                      [ 31%]
-2026-07-04T03:48:26.7060959Z test_main.py::test_student_not_found PASSED                              [ 36%]
-2026-07-04T03:48:26.7109124Z test_main.py::test_delete_history PASSED                                 [ 42%]
-2026-07-04T03:48:26.7196143Z test_main.py::test_audit_report PASSED                                   [ 47%]
-2026-07-04T03:48:26.7245269Z test_main.py::test_audit_strict PASSED                                   [ 52%]
-2026-07-04T03:48:26.7297890Z test_main.py::test_put_history PASSED                                    [ 57%]
-2026-07-04T03:48:26.7323060Z test_main.py::test_put_history_not_found PASSED                          [ 63%]
-2026-07-04T03:48:26.7346046Z test_main.py::test_delete_history_not_found PASSED                       [ 68%]
-2026-07-04T03:48:26.7397797Z test_main.py::test_put_plan PASSED                                       [ 73%]
-2026-07-04T03:48:26.7421477Z test_main.py::test_put_plan_not_found PASSED                             [ 78%]
-2026-07-04T03:48:26.7472602Z test_main.py::test_delete_plan PASSED                                    [ 84%]
-2026-07-04T03:48:26.7494721Z test_main.py::test_delete_plan_not_found PASSED                          [ 89%]
-2026-07-04T03:48:26.7516908Z test_main.py::test_audit_not_found PASSED                                [ 94%]
-2026-07-04T03:48:26.7981687Z test_main.py::test_audit_with_missing_prereq PASSED                      [100%]
-2026-07-04T03:48:26.7981908Z 
-2026-07-04T03:48:26.7981995Z =============================== warnings summary ===============================
-2026-07-04T03:48:26.7982293Z ../../../../../opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/fastapi/testclient.py:1
-2026-07-04T03:48:26.7983209Z   /opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
-2026-07-04T03:48:26.7983927Z     from starlette.testclient import TestClient as TestClient  # noqa
-2026-07-04T03:48:26.7984533Z 
-2026-07-04T03:48:26.7984714Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-2026-07-04T03:48:26.7985087Z ================================ tests coverage ================================
-2026-07-04T03:48:26.7985431Z _______________ coverage: platform linux, python 3.11.15-final-0 _______________
-2026-07-04T03:48:26.7985657Z 
-2026-07-04T03:48:26.7985737Z Name      Stmts   Miss  Cover
-2026-07-04T03:48:26.7985933Z -----------------------------
-2026-07-04T03:48:26.7986125Z main.py     209     24    89%
-2026-07-04T03:48:26.7986309Z -----------------------------
-2026-07-04T03:48:26.7986487Z TOTAL       209     24    89%
-2026-07-04T03:48:26.7986725Z Required test coverage of 80% reached. Total coverage: 88.52%
-2026-07-04T03:48:26.7987043Z ======================== 19 passed, 1 warning in 0.46s =========================
+﻿2026-07-04T06:53:17.9982118Z ##[group]Run pytest test_main.py --cov=main --cov-fail-under=80 -v
+2026-07-04T06:53:17.9982704Z [36;1mpytest test_main.py --cov=main --cov-fail-under=80 -v[0m
+2026-07-04T06:53:18.0015047Z shell: /usr/bin/bash -e {0}
+2026-07-04T06:53:18.0015321Z env:
+2026-07-04T06:53:18.0015601Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:18.0016098Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+2026-07-04T06:53:18.0016608Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:18.0017040Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:18.0017485Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+2026-07-04T06:53:18.0017928Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+2026-07-04T06:53:18.0018297Z ##[endgroup]
+2026-07-04T06:53:18.5597401Z ============================= test session starts ==============================
+2026-07-04T06:53:18.5599537Z platform linux -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.11.15/x64/bin/python
+2026-07-04T06:53:18.5601586Z cachedir: .pytest_cache
+2026-07-04T06:53:18.5602544Z rootdir: /home/runner/work/course-registration-api/course-registration-api
+2026-07-04T06:53:18.5603311Z plugins: anyio-4.14.1, cov-7.1.0
+2026-07-04T06:53:19.2467046Z collecting ... collected 19 items
+2026-07-04T06:53:19.2467413Z 
+2026-07-04T06:53:19.2653553Z test_main.py::test_import_catalog PASSED                                 [  5%]
+2026-07-04T06:53:19.2708216Z test_main.py::test_get_course_not_found PASSED                           [ 10%]
+2026-07-04T06:53:19.2803675Z test_main.py::test_get_course_found PASSED                               [ 15%]
+2026-07-04T06:53:19.2877679Z test_main.py::test_import_history PASSED                                 [ 21%]
+2026-07-04T06:53:19.2987996Z test_main.py::test_get_profile PASSED                                    [ 26%]
+2026-07-04T06:53:19.3089971Z test_main.py::test_post_plan PASSED                                      [ 31%]
+2026-07-04T06:53:19.3141065Z test_main.py::test_student_not_found PASSED                              [ 36%]
+2026-07-04T06:53:19.3245931Z test_main.py::test_delete_history PASSED                                 [ 42%]
+2026-07-04T06:53:19.3429217Z test_main.py::test_audit_report PASSED                                   [ 47%]
+2026-07-04T06:53:19.3534688Z test_main.py::test_audit_strict PASSED                                   [ 52%]
+2026-07-04T06:53:19.3638401Z test_main.py::test_put_history PASSED                                    [ 57%]
+2026-07-04T06:53:19.3686538Z test_main.py::test_put_history_not_found PASSED                          [ 63%]
+2026-07-04T06:53:19.3731006Z test_main.py::test_delete_history_not_found PASSED                       [ 68%]
+2026-07-04T06:53:19.3836825Z test_main.py::test_put_plan PASSED                                       [ 73%]
+2026-07-04T06:53:19.3883243Z test_main.py::test_put_plan_not_found PASSED                             [ 78%]
+2026-07-04T06:53:19.3985858Z test_main.py::test_delete_plan PASSED                                    [ 84%]
+2026-07-04T06:53:19.4029655Z test_main.py::test_delete_plan_not_found PASSED                          [ 89%]
+2026-07-04T06:53:19.4075231Z test_main.py::test_audit_not_found PASSED                                [ 94%]
+2026-07-04T06:53:19.4747740Z test_main.py::test_audit_with_missing_prereq PASSED                      [100%]
+2026-07-04T06:53:19.4748367Z 
+2026-07-04T06:53:19.4748673Z =============================== warnings summary ===============================
+2026-07-04T06:53:19.4749551Z ../../../../../opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/fastapi/testclient.py:1
+2026-07-04T06:53:19.4752148Z   /opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+2026-07-04T06:53:19.4754645Z     from starlette.testclient import TestClient as TestClient  # noqa
+2026-07-04T06:53:19.4755919Z 
+2026-07-04T06:53:19.4756464Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2026-07-04T06:53:19.4757565Z ================================ tests coverage ================================
+2026-07-04T06:53:19.4758748Z _______________ coverage: platform linux, python 3.11.15-final-0 _______________
+2026-07-04T06:53:19.4759372Z 
+2026-07-04T06:53:19.4759565Z Name      Stmts   Miss  Cover
+2026-07-04T06:53:19.4760081Z -----------------------------
+2026-07-04T06:53:19.4760576Z main.py     209     24    89%
+2026-07-04T06:53:19.4760910Z -----------------------------
+2026-07-04T06:53:19.4761590Z TOTAL       209     24    89%
+2026-07-04T06:53:19.4762027Z Required test coverage of 80% reached. Total coverage: 88.52%
+2026-07-04T06:53:19.4762618Z ======================== 19 passed, 1 warning in 0.89s =========================
