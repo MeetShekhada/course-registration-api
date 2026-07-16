@@ -330,7 +330,6 @@ def audit_report(
         except Exception:
             pass
     if not key:
-        from starlette.requests import Request
         key = "anonymous"
 
     now = time.time()
